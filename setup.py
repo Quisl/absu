@@ -4,13 +4,14 @@ import setuptools
 
 setuptools.setup(
     name="absu",
-    version="0.0.1",
+    version="1.0.0",
     author="Jonas C. Rabe aka Quisl",
     description=(
         "This module helps updating a static website hosted by Azure Blob "
         "Storage."
     ),
     packages=["absu", "absu.modules", "absu.modules.templates"],
+    url="https://github.com/Quisl/absu",
     install_requires=[
         "azure-storage-blob==12.13.1",  # create container and upload files
         "python-magic-bin==0.4.14",  # set Mime Types automatically
