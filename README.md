@@ -126,6 +126,13 @@ Build dist files:
 python setup.py sdist
 ```
 
+
+Upload to https://test.pypi.org:
+
+```bash
+twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+```
+
 Upload to https://pypi.org:
 
 ```bash
