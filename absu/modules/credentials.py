@@ -24,6 +24,7 @@ class Credentials:
     if they are not available"""
 
     def __init__(self, args):
+        self.quiet = args.quiet
         try:
             self.connectionstring = args.connectionstring
         except AttributeError:
@@ -35,7 +36,12 @@ class Credentials:
 
         # get Connection String
         if self.connectionstring is None:
-            self.connectionstring = get_info_from_cli(name="connection string")
+            if not self.quiet:
+                self.connectionstring = get_info_from_cli(
+                    name="connection string"
+                )
+            else:
+                raise RuntimeError("No connection string")
             if not is_connection_string(self.connectionstring):
                 raise ValueError("connection string is invalid!")
         self.storageName = self.get_value_from_connectionstring("AccountName")
@@ -43,7 +49,10 @@ class Credentials:
 
         # get local folder
         if self.folder is None:
-            self.folder = get_info_from_cli(name="local folder")
+            if not self.quiet:
+                self.folder = get_info_from_cli(name="local folder")
+            else:
+                raise RuntimeError("No folder given")
 
     def get_value_from_connectionstring(self, value):
         """returns one of these values from the connection string:

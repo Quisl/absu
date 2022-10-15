@@ -5,7 +5,7 @@ from azure.storage.blob import BlobServiceClient, ContentSettings
 import magic
 
 
-def query_yes_no(question, default="yes"):
+def _query_yes_no(question, default="yes"):
     """Ask a yes/no question via raw_input() and return their answer."""
     valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False}
     if default is None:
@@ -52,7 +52,12 @@ class AzureBlobConnector:
 
     def clean_container(self):
         """deletes files in container"""
-        if query_yes_no(f"Delete all files in the container {self.container}"):
+        if self.quiet:
+            for i in self.containerClient.list_blobs():
+                self.containerClient.delete_blob(blob=i["name"])
+        if _query_yes_no(
+            f"Delete all files in the container {self.container}"
+        ):
             for i in self.containerClient.list_blobs():
                 self.containerClient.delete_blob(blob=i["name"])
         else:

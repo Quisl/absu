@@ -30,6 +30,12 @@ def get_parameters():
         help="Folder with static website data. Will be pushed to the storage.",
     )
     parser.add_argument(
+        "-q",
+        "--quiet",
+        help="Run this tool in silent mode / quiet mode.",
+        action="store_true",
+    )
+    parser.add_argument(
         "-v",
         "--verbose",
         help="Verbose, use this flag for debugging.",

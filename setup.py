@@ -4,7 +4,7 @@ import setuptools
 
 setuptools.setup(
     name="absu",
-    version="1.0.0",
+    version="1.1.0",
     author="Jonas C. Rabe aka Quisl",
     description=(
         "This module helps updating a static website hosted by Azure Blob "
