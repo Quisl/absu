@@ -5,7 +5,7 @@ from azure.storage.blob import BlobServiceClient, ContentSettings
 import magic
 
 
-def query_yes_no(question, default="yes"):
+def _query_yes_no(question, default="yes"):
     """Ask a yes/no question via raw_input() and return their answer."""
     valid = {"yes": True, "y": True, "ye": True, "no": False, "n": False}
     if default is None:
@@ -52,7 +52,12 @@ class AzureBlobConnector:
 
     def clean_container(self):
         """deletes files in container"""
-        if query_yes_no(f"Delete all files in the container {self.container}"):
+        if self.creds.quiet:
+            for i in self.containerClient.list_blobs():
+                self.containerClient.delete_blob(blob=i["name"])
+        elif _query_yes_no(
+            f"Delete and reupload all files in the container {self.container}"
+        ):
             for i in self.containerClient.list_blobs():
                 self.containerClient.delete_blob(blob=i["name"])
         else:
@@ -75,6 +80,8 @@ class AzureBlobConnector:
         with open(source, "rb") as data:
             if ".css" in source[-4:]:
                 mimetype = ContentSettings(content_type="text/css")
+            if ".html" in source[-5:] or ".htm" in source[-4:]:
+                mimetype = ContentSettings(content_type="text/html")
             else:
                 mimetype = ContentSettings(content_type=mime.from_file(source))
             self.containerClient.upload_blob(

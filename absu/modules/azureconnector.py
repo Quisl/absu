@@ -22,28 +22,35 @@ class AzureConnector:
             self.credential, self.subscriptionId
         )
 
+    def __select_subscription(self, subs):
+        print("Found multiple subscriptions...")
+        for idx, sub in enumerate(subs):
+            print(f"{str(idx+1)}: {str(sub)}")
+        subscription_option = int(input("Select number: ")) - 1
+        print(type(subscription_option))
+        return subs[subscription_option][1]
+
+    def __run_az_login(self):
+        logging.info("Not logged in, running az login")
+        output = os.popen("az login").read()
+        logging.info("Az login results... %s", output)
+
     def get_subscription(self):
         """returns a subscription id. executes az login if not logged in"""
         try:
             sub_client = SubscriptionClient(self.credential)
         except ClientAuthenticationError:
-            logging.info("Not logged in, running az login")
-            print("ROFL")
-            process = os.popen("az login").read()
+            self.__run_az_login()
             sub_client = SubscriptionClient(self.credential)
+        subscription = sub_client.subscriptions.list()
         subs = [
             [sub.display_name, sub.subscription_id]
-            for sub in sub_client.subscriptions.list()
+            for sub in subscription
         ]
         if len(subs) == 1:
             result = subs[0][1]
         else:
-            print("Found multiple subscriptions...")
-            for idx, sub in enumerate(subs):
-                print(f"{str(idx+1)}: {str(sub)}")
-            subscription_option = int(input("Select number: ")) - 1
-            print(type(subscription_option))
-            result = subs[subscription_option][1]
+            result = self.__select_subscription(subs)
         return result
 
     def get_connection_string(self, storage, resourcegroup):
