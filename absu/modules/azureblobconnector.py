@@ -80,6 +80,8 @@ class AzureBlobConnector:
         with open(source, "rb") as data:
             if ".css" in source[-4:]:
                 mimetype = ContentSettings(content_type="text/css")
+            if ".html" in source[-5:] or ".htm" in source[-4:]:
+                mimetype = ContentSettings(content_type="text/html")
             else:
                 mimetype = ContentSettings(content_type=mime.from_file(source))
             self.containerClient.upload_blob(
