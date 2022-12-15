@@ -55,8 +55,8 @@ class AzureBlobConnector:
         if self.quiet:
             for i in self.containerClient.list_blobs():
                 self.containerClient.delete_blob(blob=i["name"])
-        if _query_yes_no(
-            f"Delete all files in the container {self.container}"
+        elif _query_yes_no(
+            f"Delete and reupload all files in the container {self.container}"
         ):
             for i in self.containerClient.list_blobs():
                 self.containerClient.delete_blob(blob=i["name"])
