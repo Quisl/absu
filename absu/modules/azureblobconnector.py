@@ -52,7 +52,7 @@ class AzureBlobConnector:
 
     def clean_container(self):
         """deletes files in container"""
-        if self.quiet:
+        if self.creds.quiet:
             for i in self.containerClient.list_blobs():
                 self.containerClient.delete_blob(blob=i["name"])
         elif _query_yes_no(
